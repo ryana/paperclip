@@ -12,13 +12,14 @@ module Paperclip
         :styles        => {},
         :default_url   => "/:attachment/:style/missing.png",
         :default_style => :original,
+        :keep_old_files => false,
         :validations   => [],
         :storage       => :filesystem,
         :whiny         => Paperclip.options[:whiny] || Paperclip.options[:whiny_thumbnails]
       }
     end
 
-    attr_reader :name, :instance, :styles, :default_style, :convert_options, :queued_for_write, :options
+    attr_reader :name, :instance, :keep_old_files, :styles, :default_style, :convert_options, :queued_for_write, :options
 
     # Creates an Attachment object. +name+ is the name of the attachment,
     # +instance+ is the ActiveRecord object instance it's attached to, and
@@ -38,6 +39,7 @@ module Paperclip
       @default_url       = options[:default_url]
       @validations       = options[:validations]
       @default_style     = options[:default_style]
+      @keep_old_files    = options[:keep_old_files]
       @storage           = options[:storage]
       @whiny             = options[:whiny_thumbnails] || options[:whiny]
       @convert_options   = options[:convert_options] || {}
@@ -396,7 +398,7 @@ module Paperclip
       return unless file?
       @queued_for_delete += [:original, *@styles.keys].uniq.map do |style|
         path(style) if exists?(style)
-      end.compact
+      end.compact unless keep_old_files
       instance_write(:file_name, nil)
       instance_write(:content_type, nil)
       instance_write(:file_size, nil)

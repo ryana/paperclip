@@ -665,6 +665,31 @@ class AttachmentTest < Test::Unit::TestCase
                 @attachment.destroy
                 @existing_names.each{|f| assert ! File.exists?(f) }
               end
+
+              context "with keep_old_files set to true" do
+                setup do
+                  @attachment.instance_variable_set(:@keep_old_files, true)
+                  #set keep_old_Files true
+                end
+
+                should "not delete the files after assigning nil" do
+                  @attachment.assign nil
+                  @attachment.save
+                  @existing_names.each{|f| assert File.exists?(f) }
+                end
+
+                should "not delete the files when you call #clear and #save" do
+                  @attachment.clear
+                  @attachment.save
+                  @existing_names.each{|f| assert File.exists?(f) }
+                end
+
+                should "not delete the files when you call #delete" do
+                  @attachment.destroy
+                  @existing_names.each{|f| assert File.exists?(f) }
+                end
+              
+              end
             end
           end
         end
