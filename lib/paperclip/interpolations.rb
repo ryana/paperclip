@@ -86,7 +86,7 @@ module Paperclip
 
     # Returns the id of the instance.
     def id attachment, style_name
-      attachment.instance.id
+      attachment.instance.id.to_i
     end
 
     # Returns the fingerprint of the instance.
@@ -97,7 +97,7 @@ module Paperclip
     # Returns the id of the instance in a split path form. e.g. returns
     # 000/001/234 for an id of 1234.
     def id_partition attachment, style_name
-      ("%09d" % attachment.instance.id).scan(/\d{3}/).join("/")
+      ("%09d" % attachment.instance.id.to_i).scan(/\d{3}/).join("/")
     end
 
     # Returns the pluralized form of the attachment name. e.g.
